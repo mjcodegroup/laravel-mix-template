@@ -2,6 +2,7 @@
 
 namespace App\Actions;
 
+use App\Dtos\ResponseDto;
 use App\Repositories\UserRepository;
 use PHPUnit\TextUI\CliArguments\Exception;
 
@@ -21,7 +22,7 @@ class UserAction implements BaseAction
     {
         $createdUser = $this->userRepository->create($data);
         if (!$createdUser) {
-            throw new Exception("Failed to create user.");
+            throw new Exception("Failed to create user.", ResponseDto::INTERNAL_SERVER_ERROR);
         }
         return $createdUser;
 	}
@@ -29,7 +30,9 @@ class UserAction implements BaseAction
 	/**
 	 * @return mixed
 	 */
-	public function findAll() {
+	public function findAll() 
+    {
+        return $this->userRepository->findAll();
 	}
 	
 	/**
@@ -37,7 +40,28 @@ class UserAction implements BaseAction
 	 * @param number $id
 	 * @return mixed
 	 */
-	public function findOne(int $id) {
+	public function findOne(int $id) 
+    {
+        $foundUser = $this->userRepository->findOne($id);
+        if (!$foundUser) {
+            throw new Exception("User not found", ResponseDto::NOT_FOUND);
+        }
+        return $foundUser;
+	}
+
+    /**
+	 * @param int $id
+	 * @param array $data
+	 * @return mixed
+	 */
+	public function update(int $id, array $data) 
+    {
+        $this->findOne($id);
+        $response = $this->userRepository->update($id, $data);
+        if (!$response) {
+            throw new Exception("Failed to update user", ResponseDto::INTERNAL_SERVER_ERROR);
+        }
+        return $response;
 	}
 	
 	/**
@@ -45,6 +69,13 @@ class UserAction implements BaseAction
 	 * @param number $id
 	 * @return mixed
 	 */
-	public function remove(int $id) {
+	public function remove(int $id) 
+    {
+        $this->findOne($id);
+        $response = $this->userRepository->remove($id);
+        if (!$response) {
+            throw new Exception("Failed to delete user", ResponseDto::INTERNAL_SERVER_ERROR);
+        }
+        return $response;
 	}
 }

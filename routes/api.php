@@ -25,7 +25,7 @@ Route::group([
         Route::post('/', [UserController::class, 'create'])->name('create');
         Route::get('/{id}',    [UserController::class, 'show'])->name('show');
         Route::put('/{id}', [UserController::class, 'update'])->name('update');
-        Route::delete('/{id}', [UserController::class, 'delete'])->name('delete');
+        Route::delete('/{id}', [UserController::class, 'destroy'])->name('delete');
     });
 
 });

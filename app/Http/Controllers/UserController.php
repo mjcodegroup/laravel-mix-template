@@ -22,7 +22,12 @@ class UserController extends Controller
      */
     public function index()
     {
-        //
+        try {
+            $response = $this->userAction->findAll();
+            return ResponseDto::success(ResponseDto::OK, $response);
+        } catch (Exception $e) {
+            return ResponseDto::error($e->getMessage(), $e->getCode());
+        }
     }
 
     /**
@@ -34,7 +39,7 @@ class UserController extends Controller
     {
         try {
             $response = $this->userAction->create($request->all());
-            return ResponseDto::success(ResponseDto::OK, $response);
+            return ResponseDto::success(ResponseDto::CREATED, $response);
         } catch (Exception $e) {
             return ResponseDto::error($e->getMessage(), $e->getCode());
         }
@@ -48,18 +53,12 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
+        try {
+            $response = $this->userAction->findOne($id);
+            return ResponseDto::success(ResponseDto::OK, $response);
+        } catch (Exception $e) {
+            return ResponseDto::error($e->getMessage(), $e->getCode());
+        }
     }
 
     /**
@@ -71,7 +70,13 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        
+        try {
+            $response = $this->userAction->update($id, $request->all());
+            return ResponseDto::success(ResponseDto::OK, $response);
+        } catch (Exception $e) {
+            return ResponseDto::error($e->getMessage(), $e->getCode());
+        }
     }
 
     /**
@@ -82,6 +87,11 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        //
+        try {
+            $response = $this->userAction->remove($id);
+            return ResponseDto::success(ResponseDto::OK, $response);
+        } catch (Exception $e) {
+            return ResponseDto::error($e->getMessage(), $e->getCode());
+        }
     }
 }
