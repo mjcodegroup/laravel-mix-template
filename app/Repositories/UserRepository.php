@@ -55,6 +55,7 @@ class UserRepository implements BaseRepository{
 	 */
 	public function remove(int $id) 
     {
+        $this->user = $this->findOne($id);
         return $this->user->destroy($id);
 	}
 }
