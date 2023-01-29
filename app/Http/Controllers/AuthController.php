@@ -2,33 +2,52 @@
 
 namespace App\Http\Controllers;
 
+use Exception;
 use App\Dtos\ResponseDto;
 use Illuminate\Http\Request;
+use App\Actions\AuthAction;
 
 class AuthController extends Controller
 {
+    /**
+     * AuthAction
+     * @var mixed
+     */
+    private $authAction;
+
+    public function __construct()
+    {
+        $this->authAction = new AuthAction();
+    }
+
     public function login(Request $request)
     {
-        $credentials = $request->only('email', 'password');
-        if (!$token = auth()->attempt($credentials)) {
-            return ResponseDto::error('L\'utilisateur ou le mot passe sont incorrectes, veuillez reessayer!', ResponseDto::UNAUTHORIZED);
+        try {
+            $response = $this->authAction->login($request);
+            return ResponseDto::success(ResponseDto::OK, $response);
+        } catch (Exception $e) {
+            return ResponseDto::error($e->getMessage(), $e->getCode());
         }
-
-        return $this->respondWithToken([
-            'user' => $request->user(),
-            'token' => $token
-        ]);
     }
 
     public function logout()
     {
-        auth()->invalidate(true);
-        return ResponseDto::success(ResponseDto::OK, [], 'Successfully logged out');
+        try {
+            $this->authAction->logout();
+            return ResponseDto::success(ResponseDto::OK, [], 'Successfully logged out');
+        } catch (Exception $e) {
+            return ResponseDto::error($e->getMessage(), $e->getCode());
+        }
     }
 
     public function me()
     {
-        return ResponseDto::success(ResponseDto::OK, auth()->user());
+        try {
+            $response = $this->authAction->me();
+            return ResponseDto::success(ResponseDto::OK, $response);
+        } catch (Exception $e) {
+            return ResponseDto::error($e->getMessage(), $e->getCode());
+        }
     }
 
 
