@@ -6,9 +6,11 @@ use Illuminate\Console\GeneratorCommand;
 use InvalidArgumentException;
 use Symfony\Component\Console\Input\InputOption;
 
-class makeAction extends GeneratorCommand
+class MakeFile extends GeneratorCommand
 {
-    protected $signature = 'make:action {name} {--m=}';
+    const REPOSITORY = 'r';
+    const ACTION = 'a';
+    protected $signature = 'make:file {--type=} {name} {--m=}';
 
     protected $description = 'Create action file';
 
@@ -46,6 +48,8 @@ class makeAction extends GeneratorCommand
 
         $replace = [
             '{{ namespacedModel }}' => $modelClass,
+            '{{ model }}' => class_basename($modelClass),
+            '{{ modelVariable }}' => lcfirst(class_basename($modelClass)),
             '{{ modelRepository }}' => class_basename($modelClass."Repository"),
             '{{ modelRepositoryVariable }}' => lcfirst(class_basename($modelClass."Repository")),
         ];
@@ -79,7 +83,17 @@ class makeAction extends GeneratorCommand
      */
     protected function getStub()
     {
-        return  app_path().'/Console/Commands/Stubs/action.stub';
+        $fileType = $this->option('type');
+
+        if (!in_array($fileType, [self::REPOSITORY, self::ACTION])){
+            throw new InvalidArgumentException("File type must be 'a' for Action  or 'r' for Repository");
+        }
+        
+        if ($fileType == self::ACTION) {
+            return  app_path().'/Console/Commands/Stubs/action.stub';
+        } else {
+            return  app_path().'/Console/Commands/Stubs/repository.stub';
+        }
     }
 
 
@@ -92,7 +106,17 @@ class makeAction extends GeneratorCommand
      */
     protected function getDefaultNamespace($rootNamespace)
     {
-        return $rootNamespace.'\Actions';
+        $fileType = $this->option('type');
+
+        if (!in_array($fileType, [self::REPOSITORY, self::ACTION])){
+            throw new InvalidArgumentException("File type must be 'a' for Action  or 'r' for Repository");
+        }
+
+        if ($fileType == self::ACTION) {
+            return $rootNamespace.'\Actions';
+        } else {
+            return $rootNamespace.'\Repositories';
+        }
     }
 
     /**
