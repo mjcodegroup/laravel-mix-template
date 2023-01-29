@@ -1,1 +1,1 @@
-_.vue @Marckender _.js @Marckender \*.php @jodfedlet
+*.vue @Marckender *.js @Marckender *.php @jodfedlet
