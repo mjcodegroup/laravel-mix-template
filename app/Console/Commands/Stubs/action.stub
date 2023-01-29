@@ -1,0 +1,15 @@
+<?php
+
+namespace {{ namespace }};
+
+use App\Repositories\{{ modelRepository }};
+
+class {{ class }} implements BaseAction
+{
+    private ${{ modelRepositoryVariable }} ;
+
+    public function __construct()
+    {
+        $this->{{ modelRepositoryVariable }} = new {{ modelRepository }}() ;
+    }
+}
