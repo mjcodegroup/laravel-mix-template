@@ -2,9 +2,10 @@
 
 namespace App\Actions;
 
+use Exception;
 use App\Dtos\ResponseDto;
 use App\Repositories\UserRepository;
-use PHPUnit\TextUI\CliArguments\Exception;
+use Illuminate\Support\Facades\Hash;
 
 class UserAction implements BaseAction
 {
@@ -20,6 +21,8 @@ class UserAction implements BaseAction
 	 */
 	public function create(array $data)
     {
+        //encrypt the user password
+        $data['password'] = Hash::make($data['password']);
         $createdUser = $this->userRepository->create($data);
         if (!$createdUser) {
             throw new Exception("Failed to create user.", ResponseDto::INTERNAL_SERVER_ERROR);
@@ -57,6 +60,11 @@ class UserAction implements BaseAction
 	public function update(int $id, array $data) 
     {
         $this->findOne($id);
+        //don t let modify the user password from here
+        if (isset($data['password'])) {
+            unset($data['password']);
+        }
+
         $response = $this->userRepository->update($id, $data);
         if (!$response) {
             throw new Exception("Failed to update user", ResponseDto::INTERNAL_SERVER_ERROR);
