@@ -10,11 +10,13 @@ class MakeFile extends GeneratorCommand
 {
     const REPOSITORY = 'r';
     const ACTION = 'a';
+
+    const CONTROLLER = 'c';
     protected $signature = 'make:file {--type=} {name} {--m=}';
 
-    protected $description = 'Create action file';
+    protected $description = 'Create file';
 
-    protected $type = 'Action file';
+    protected $type = 'File';
 
     protected function getNameInput()
     {
@@ -50,8 +52,10 @@ class MakeFile extends GeneratorCommand
             '{{ namespacedModel }}' => $modelClass,
             '{{ model }}' => class_basename($modelClass),
             '{{ modelVariable }}' => lcfirst(class_basename($modelClass)),
-            '{{ modelRepository }}' => class_basename($modelClass."Repository"),
-            '{{ modelRepositoryVariable }}' => lcfirst(class_basename($modelClass."Repository")),
+            '{{ modelAction }}' => class_basename($modelClass . "Action"),
+            '{{ modelActionVariable }}' => lcfirst(class_basename($modelClass . "Action")),
+            '{{ modelRepository }}' => class_basename($modelClass . "Repository"),
+            '{{ modelRepositoryVariable }}' => lcfirst(class_basename($modelClass . "Repository")),
         ];
 
         return str_replace(
@@ -85,18 +89,18 @@ class MakeFile extends GeneratorCommand
     {
         $fileType = $this->option('type');
 
-        if (!in_array($fileType, [self::REPOSITORY, self::ACTION])){
+        if (!in_array($fileType, [self::REPOSITORY, self::ACTION, self::CONTROLLER])) {
             throw new InvalidArgumentException("File type must be 'a' for Action  or 'r' for Repository");
         }
-        
+
         if ($fileType == self::ACTION) {
-            return  app_path().'/Console/Commands/Stubs/action.stub';
+            return app_path() . '/Console/Commands/Stubs/action.stub';
+        } elseif ($fileType == self::REPOSITORY) {
+            return app_path() . '/Console/Commands/Stubs/repository.stub';
         } else {
-            return  app_path().'/Console/Commands/Stubs/repository.stub';
+            return app_path() . '/Console/Commands/Stubs/controller.stub';
         }
     }
-
-
 
     /**
      * Get the default namespace for the class.
@@ -108,14 +112,16 @@ class MakeFile extends GeneratorCommand
     {
         $fileType = $this->option('type');
 
-        if (!in_array($fileType, [self::REPOSITORY, self::ACTION])){
-            throw new InvalidArgumentException("File type must be 'a' for Action  or 'r' for Repository");
+        if (!in_array($fileType, [self::REPOSITORY, self::ACTION, self::CONTROLLER])) {
+            throw new InvalidArgumentException("File type must be 'a' for Action, 'r' for Repository or 'c' for Controller  ");
         }
 
         if ($fileType == self::ACTION) {
-            return $rootNamespace.'\Actions';
+            return $rootNamespace . '\Actions';
+        } elseif ($fileType == self::REPOSITORY) {
+            return $rootNamespace . '\Repositories';
         } else {
-            return $rootNamespace.'\Repositories';
+            return $rootNamespace . '\Http\Controllers';
         }
     }
 

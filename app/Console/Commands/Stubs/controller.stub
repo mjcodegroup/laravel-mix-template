@@ -3,16 +3,17 @@
 namespace App\Http\Controllers;
 
 use Exception;
-use App\Actions\UserAction;
+use App\Actions\{{ modelAction }};
 use App\Dtos\ResponseDto;
 use Illuminate\Http\Request;
 
-class UserController extends Controller
+class {{ class }} extends Controller
 {
-    private $userAction;
+    private ${{ modelActionVariable }};
 
-    public function __construct(){
-        $this->userAction = new UserAction();
+    public function __construct()
+    {
+        $this->{{ modelActionVariable }} = new {{ modelAction }}();
     }
 
     /**
@@ -23,7 +24,7 @@ class UserController extends Controller
     public function index()
     {
         try {
-            $response = $this->userAction->findAll();
+            $response = $this->{{ modelActionVariable }}->findAll();
             return ResponseDto::success(ResponseDto::OK, $response);
         } catch (Exception $e) {
             return ResponseDto::error($e->getMessage(), $e->getCode());
@@ -38,7 +39,7 @@ class UserController extends Controller
     public function store(Request $request)
     {
         try {
-            $response = $this->userAction->create($request->all());
+            $response = $this->{{ modelActionVariable }}->create($request->all());
             return ResponseDto::success(ResponseDto::CREATED, $response);
         } catch (Exception $e) {
             return ResponseDto::error($e->getMessage(), $e->getCode());
@@ -54,7 +55,7 @@ class UserController extends Controller
     public function show($id)
     {
         try {
-            $response = $this->userAction->findOne($id);
+            $response = $this->{{ modelActionVariable }}->findOne($id);
             return ResponseDto::success(ResponseDto::OK, $response);
         } catch (Exception $e) {
             return ResponseDto::error($e->getMessage(), $e->getCode());
@@ -71,7 +72,7 @@ class UserController extends Controller
     public function update(Request $request, $id)
     {
         try {
-            $response = $this->userAction->update($id, $request->all());
+            $response = $this->{{ modelActionVariable }}->update($id, $request->all());
             return ResponseDto::success(ResponseDto::OK, $response);
         } catch (Exception $e) {
             return ResponseDto::error($e->getMessage(), $e->getCode());
@@ -87,7 +88,7 @@ class UserController extends Controller
     public function destroy($id)
     {
         try {
-            $response = $this->userAction->remove($id);
+            $response = $this->{{ modelActionVariable }}->remove($id);
             return ResponseDto::success(ResponseDto::OK, $response);
         } catch (Exception $e) {
             return ResponseDto::error($e->getMessage(), $e->getCode());
