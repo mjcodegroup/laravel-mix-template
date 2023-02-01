@@ -70,7 +70,6 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        
         try {
             $response = $this->userAction->update($id, $request->all());
             return ResponseDto::success(ResponseDto::OK, $response);
