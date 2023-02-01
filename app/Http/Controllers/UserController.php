@@ -35,7 +35,7 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create(Request $request)
+    public function store(Request $request)
     {
         try {
             $response = $this->userAction->create($request->all());
