@@ -2,6 +2,8 @@
 
 namespace {{ namespace }};
 
+use Exception;
+use App\Dtos\ResponseDto;
 use App\Repositories\{{ modelRepository }};
 
 class {{ class }} implements BaseAction
